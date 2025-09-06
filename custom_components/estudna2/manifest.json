@@ -1,0 +1,16 @@
+{
+  "domain": "estudna2",
+  "name": "eSTUDNA2",
+  "version": "1.0.0",
+  "documentation": "https://github.com/wolfie-cz/estudna2",
+  "requirements": [
+    "requests",
+    "PyJWT"
+  ],
+  "dependencies": [],
+  "codeowners": ["@wolfie-cz", "@nijel"],
+  "config_flow": true,
+  "integration_type": "config_entry",
+  "iot_class": "cloud_polling",
+  "homeassistant": "2024.12.0"
+}
