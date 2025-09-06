@@ -2,7 +2,7 @@
   "domain": "estudna2",
   "name": "eSTUDNA2",
   "version": "1.0.0",
-  "documentation": "https://github.com/wolfie-cz/estudna2",
+  "documentation": "https://github.com/wolfie-cz/hass-estudna2",
   "requirements": [
     "requests",
     "PyJWT"

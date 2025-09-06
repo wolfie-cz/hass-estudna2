@@ -15,7 +15,7 @@ PLATFORMS = ["sensor"]
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Set up eSTUDNA from a config entry."""
+    """Set up eSTUDNA2 from a config entry."""
     hass.data.setdefault(DOMAIN, {})
 
     tb = ThingsBoard()

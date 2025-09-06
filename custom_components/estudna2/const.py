@@ -1,4 +1,4 @@
 """Constants for the eSTUDNA integration."""
 
-DOMAIN = "estudna"
+DOMAIN = "estudna2"
 PLATFORMS = ["sensor"]

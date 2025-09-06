@@ -10,7 +10,7 @@ from .estudna import ThingsBoard
 _LOGGER = logging.getLogger(__name__)
 
 class EStudnaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
-    """Config flow pro eSTUDNA."""
+    """Config flow pro eSTUDNA2."""
 
     VERSION = 1
     CONNECTION_CLASS = config_entries.CONN_CLASS_CLOUD_POLL
