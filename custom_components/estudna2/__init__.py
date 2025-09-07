@@ -24,7 +24,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     tb = ThingsBoard()
 
     try:
-        # Login via API v2 
+        # Login via API v2
         await hass.loop.run_in_executor(
             None,
             partial(tb.login, entry.data.get("username"), entry.data.get("password"))
