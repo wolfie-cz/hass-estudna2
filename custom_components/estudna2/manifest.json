@@ -8,6 +8,5 @@
   "dependencies": [],
   "codeowners": ["@wolfie-cz"],
   "config_flow": true,
-  "integration_type": "config_entry",
   "iot_class": "cloud_polling"
 }
