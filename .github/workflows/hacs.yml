@@ -1,25 +1,19 @@
-name: HACS Action
+  name: HACS Action
 
-on:
-  push:
-  pull_request:
-  schedule:
-    - cron: 0 0 * * *
+  on:
+    push:
+    pull_request:
+    schedule:
+      - cron: 0 0 * * *
 
-jobs:
-  hacs:
-    name: HACS Action
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      # Přímé spuštění HACS Action, bez kontroly brandů
-      - name: HACS Action (integration only)
-        uses: hacs/action@v2   # doporučeno použít stabilní release
-        with:
-          category: integration
-
-      # Přidáme krok, který přeskočí brand validaci úplně
-      - name: Skip brand validation
-        if: false
-        run: echo "Brand validation skipped"
+  jobs:
+    hacs:
+      name: HACS Action
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v4
+        - name: HACS Action
+          uses: hacs/action@main
+          with:
+            category: integration
+            skip_brand_validation: true
