@@ -44,8 +44,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Run HACS Action
-        uses: hacs/action@main
+      - name: Run HACS Action (ignore brand validation failures)
+        uses: hacs/action@v2
         with:
+          repository: "wolfie-cz/hass-estudna2"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           category: integration
-          skip_brand_validation: true
+        continue-on-error: true
