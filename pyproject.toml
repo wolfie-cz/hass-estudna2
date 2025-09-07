@@ -12,6 +12,9 @@ ignore-words-list = "hass"
 
 [tool.ruff]
 required-version = ">=0.8.0"
+line-length = 88
+select = ["F", "E", "W"]        # kontrola chyb F821, E/W
+known_third_party = ["requests", "homeassistant"]
 
 [tool.ruff.lint]
 ignore = [
