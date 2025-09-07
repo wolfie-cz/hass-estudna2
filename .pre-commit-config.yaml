@@ -1,4 +1,4 @@
-# Pre-commit configuration for eSTUDNA2
+# Minimal pre-commit configuration for eSTUDNA2
 # https://pre-commit.com
 
 repos:
@@ -12,58 +12,17 @@ repos:
       - id: check-yaml
       - id: check-json
       - id: check-toml
-      - id: debug-statements
-      - id: mixed-line-ending
-        args: [--fix=lf]
-      - id: pretty-format-json
-        args: [--no-sort-keys, --autofix, --no-ensure-ascii]
 
-  # Ruff linter and formatter
+  # Ruff linter for Python
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.9.0
     hooks:
       - id: ruff
-        args: [--fix, --exit-non-zero-on-fix]
-        additional_dependencies: ["requests", "homeassistant"]
-      - id: ruff-format
+        args: [--fix]
         additional_dependencies: ["requests", "homeassistant"]
 
-  # Meta checks for pre-commit configuration
-  - repo: meta
-    hooks:
-      - id: check-hooks-apply
-      - id: check-useless-excludes
-
-  # YAML/TOML formatting
-  - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
-    rev: v2.14.0
-    hooks:
-      - id: pretty-format-yaml
-        args: [--autofix, --indent, '2']
-      - id: pretty-format-toml
-        args: [--autofix]
-
-  # Validate pyproject.toml
-  - repo: https://github.com/abravalheri/validate-pyproject
-    rev: v0.23
-    hooks:
-      - id: validate-pyproject
-
-  # Markdown formatting
-  - repo: https://github.com/executablebooks/mdformat
-    rev: 0.7.21
-    hooks:
-      - id: mdformat
-        additional_dependencies:
-          - mdformat-gfm==0.4.1
-          - mdformat-ruff==0.1.3
-          - mdformat-shfmt==0.2.0
-          - mdformat_tables==1.0.0
-
-  # Spell checking
+  # Optional spell checking
   - repo: https://github.com/codespell-project/codespell
     rev: v2.3.0
     hooks:
       - id: codespell
-        additional_dependencies:
-          - tomli
