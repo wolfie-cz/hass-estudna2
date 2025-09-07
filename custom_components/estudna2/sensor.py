@@ -46,7 +46,7 @@ class EStudnaSensor(SensorEntity):
 
     @property
     def extra_state_attributes(self):
-        """Returns attribs oth the sensor for HA."""
+        """Returns attributes of the sensor for HA."""
         return self._attributes
 
     @property
@@ -58,7 +58,7 @@ class EStudnaSensor(SensorEntity):
         return UnitOfLength.METERS
 
     async def async_update(self) -> None:
-        """Update of status of sensors and attribs."""
+        """Update of status of sensors and attributes."""
         try:
             values = await self._hass.async_add_executor_job(
                 self._thingsboard.get_device_values, self.unique_id
@@ -72,35 +72,42 @@ class EStudnaSensor(SensorEntity):
                 raw_val = entry.get("value")
                 ts = entry.get("ts")
 
-                val_json = json.loads(raw_val)
-                self._state = float(val_json.get("str"))
+                try:
+                    val_json = json.loads(raw_val)
+                    self._state = float(val_json.get("str"))
+                    self._attributes = {
+                        "zone": val_json.get("zone"),
+                        "units": val_json.get("units"),
+                        "last_updated": datetime.fromtimestamp(ts / 1000).isoformat()
+                    }
+                except (ValueError, TypeError, json.JSONDecodeError) as e:
+                    _LOGGER.error(
+                        "Error while parsing value for device %s: %s", self.unique_id, e
+                    )
+                    self._state = None
+                    self._attributes = {}
 
-                # I wanted to add attribs : zone, units and time of last telemetry
-                self._attributes = {
-                    "zone": val_json.get("zone"),
-                    "units": val_json.get("units"),
-                    "last_updated": datetime.fromtimestamp(ts / 1000).isoformat()
-                }
-
-        except Exception as e:
-            _LOGGER.error("There has been an issue while retrieving watter level for %s: %s", self.unique_id, e)
+        except requests.exceptions.RequestException as e:
+            _LOGGER.error(
+                "Error retrieving water level for device %s: %s", self.unique_id, e
+            )
             self._state = None
             self._attributes = {}
 
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ):
-    """Set EStudna sensors from config entry."""
+    """Set up EStudna sensors from config entry."""
     username = entry.data.get("username")
     password = entry.data.get("password")
 
     thingsboard = ThingsBoard()
     try:
-        # We are logging in and getting the list of devices 
+        # Logging in and getting list of devices
         await hass.async_add_executor_job(thingsboard.login, username, password)
         devices = await hass.async_add_executor_job(thingsboard.get_devices)
-    except Exception as e:
-        _LOGGER.error("We cannot connetc to eSTUDNA2: %s", e)
+    except (requests.exceptions.RequestException, ValueError) as e:
+        _LOGGER.error("Cannot connect to eSTUDNA2: %s", e)
         devices = []
 
     # Creating sensors for all devices

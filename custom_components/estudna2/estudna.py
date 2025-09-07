@@ -7,7 +7,7 @@ import json
 _LOGGER = logging.getLogger(__name__)
 
 class ThingsBoard:
-    """eSTUDNA2 wrapper/ ThingsBoard API (API v2)."""
+    """eSTUDNA2 wrapper / ThingsBoard API (API v2)."""
 
     def __init__(self):
         self.server = "https://cml5.seapraha.cz"
@@ -55,14 +55,14 @@ class ThingsBoard:
         self.user_id = response.get("user_id")
 
         if not self.userToken or not self.refreshToken or not self.user_id:
-            raise Exception("Login failed: missing token or user_id")
+            raise ValueError("Login failed: missing token or user_id")
 
         _LOGGER.info("Login successful, user_id: %s", self.user_id)
 
     def refresh_token(self):
         """Renewal of JWT token via API v2."""
         if not self.refreshToken:
-            raise Exception("No refresh token available. Please login first.")
+            raise ValueError("No refresh token available. Please login first.")
 
         response = self.http_post("/apiv2/auth/token", data={"refreshToken": self.refreshToken}, check_token=False)
         self.userToken = response["token"]
@@ -80,36 +80,30 @@ class ThingsBoard:
     def get_devices(self):
         """Getting the list of devices for actual user"""
         if not self.user_id:
-            raise Exception("No user_id. Please login first.")
+            raise ValueError("No user_id. Please login first.")
 
-        # Corretn endpoint for devices 
         resp = self.http_get(f"/apiv2/user/{self.user_id}/devices")
-        # API returns the list 
         devices = resp if isinstance(resp, list) else resp.get("data", [])
         if not devices:
-            raise Exception("No devices found!")
+            raise ValueError("No devices found!")
         return devices
 
     def get_device_values(self, device_id, keys=None):
-        """
-        Retrieveing last telemotry for the device.
-        If keys equals None, all values are retieved.
-        """
+        """Retrieving last telemetry for the device."""
         return self.http_get(f"/apiv2/device/{device_id}/latest")
 
     def get_estudna_level(self, device_id):
-        """Retrieves the current value of water level(ain1)."""
+        """Retrieves the current value of water level (ain1)."""
         values = self.get_device_values(device_id)
         if not values or "ain1" not in values:
             return None
 
-        try:
-            # API gets list , 'value' is JSON string
-            raw = values["ain1"]
-            if isinstance(raw, list) and raw:
-                val_str = raw[0]["value"]
+        raw = values["ain1"]
+        if isinstance(raw, list) and raw:
+            val_str = raw[0].get("value")
+            try:
                 val_json = json.loads(val_str)
-                return float(val_json.get("str"))  # the velue is only a number without the unnecassary other info
-        except Exception as e:
-            _LOGGER.error("Error while parsing the value of watter level: %s", e)
-            return None
+                return float(val_json.get("str"))
+            except (ValueError, TypeError, json.JSONDecodeError) as e:
+                _LOGGER.error("Error while parsing the water level value: %s", e)
+        return None

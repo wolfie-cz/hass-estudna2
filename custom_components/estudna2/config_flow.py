@@ -6,6 +6,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResult
 from .const import DOMAIN
 from .estudna import ThingsBoard
+import requests
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -35,7 +36,7 @@ class EStudnaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         "password": password
                     }
                 )
-            except Exception as e:
+            except (requests.exceptions.RequestException, ValueError) as e:
                 _LOGGER.error("We could not login to eSTUDNA2: %s", e)
                 errors["base"] = "cannot_connect"
 

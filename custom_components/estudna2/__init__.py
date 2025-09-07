@@ -2,6 +2,7 @@
 
 from functools import partial
 import logging
+import requests
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -9,6 +10,8 @@ from homeassistant.core import HomeAssistant
 from .const import DOMAIN
 from .estudna import ThingsBoard
 from .sensor import EStudnaSensor
+
+__all__ = ["EStudnaSensor"]  # pro export a odstranění F401
 
 _LOGGER = logging.getLogger(__name__)
 PLATFORMS = ["sensor"]
@@ -26,14 +29,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             None,
             partial(tb.login, entry.data.get("username"), entry.data.get("password"))
         )
-    except Exception as e:
+    except (requests.exceptions.RequestException, ValueError) as e:
         _LOGGER.error("Could not login to eSTUDNA2: %s", e)
         return False
 
     # Storing ThingsBoard instance for this entry_id
     hass.data[DOMAIN][entry.entry_id] = tb
 
-    # Handing over to platforms (senzors)
+    # Handing over to platforms (sensors)
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True
 
