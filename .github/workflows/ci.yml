@@ -32,7 +32,7 @@ jobs:
           pip install pre-commit requests homeassistant
 
       - name: Run pre-commit
-        run: pre-commit run --all-files --ignore-missing-configs
+        run: pre-commit run --all-files
         env:
           RUFF_OUTPUT_FORMAT: github
           PRE_COMMIT_HOME: ~/.pre-commit-cache
