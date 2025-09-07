@@ -1,4 +1,5 @@
 import logging
+import requests
 from homeassistant.components.sensor import SensorEntity, SensorStateClass
 from homeassistant.const import UnitOfLength
 from homeassistant.helpers.entity import DeviceInfo
